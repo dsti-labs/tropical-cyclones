@@ -1,6 +1,5 @@
 # project files
-data_visualization/Data/ibtracs.csv
-data_visualization/Data/ibtracs.csv:Zone.Identifier
+data/ibtracs.csv
 
 .python-version
 
