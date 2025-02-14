@@ -8,6 +8,8 @@ Tropical Cyclones Severity Prediction.
 
 ```pyenv global 3.13.1```
 
+```pip install --upgrade pip```
+
 - cd to the project's folder.
 
 ```python -m venv .venv```
@@ -17,6 +19,10 @@ Tropical Cyclones Severity Prediction.
 ```source .venv/bin/activate (for macOS)```
 
 ```pip install -r requirements.txt```
+
+If the requirements install fails for any reason, install the packages manually:
+
+```pip install jupyterlab numpy pandas plotly pyarrow scikit-learn```
 
 ## Resources
 
