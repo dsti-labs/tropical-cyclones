@@ -1,6 +1,12 @@
 # project files
 data/ibtracs.csv
 
+data/weights
+data/weights.zip
+model_ml_all_dummy.ipynb
+model_ml.ipynb
+
+
 .python-version
 
 # Byte-compiled / optimized / DLL files
