@@ -1,5 +1,7 @@
 # project files
 data/ibtracs.csv
+data_visualization/shapefiles/World_Seas_IHO_v3.shp
+data_visualization/shapefiles/goas_v01.shp
 
 .python-version
 
