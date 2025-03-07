@@ -22,7 +22,7 @@ Tropical Cyclones Severity Prediction.
 
 If the requirements install fails for any reason, install the packages manually:
 
-```pip install jupyterlab numpy pandas plotly pyarrow scikit-learn```
+```pip install jupyterlab numpy pandas plotly pyarrow scikit-learn django```
 
 ## Resources
 
