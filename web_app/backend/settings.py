@@ -15,12 +15,13 @@ from pathlib import Path
 import configparser
 
 config = configparser.ConfigParser()
-env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.env")
+env_file = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "../../.env"
+)
 config.read(env_file)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -32,7 +33,6 @@ SECRET_KEY = config.get("settings", "DJANGO_SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 

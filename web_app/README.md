@@ -2,27 +2,7 @@
 
 Tropical Cyclones Severity Prediction.
 
-## Install
-
-```pyenv install 3.13.1```
-
-```pyenv global 3.13.1```
-
-```pip install --upgrade pip```
-
-- cd to the project's folder.
-
-```python -m venv .venv```
-
-```source /bin/activate/.venv (for Windows)```
-
-```source .venv/bin/activate (for macOS)```
-
-```pip install -r requirements.txt```
-
-If the requirements install fails for any reason, install the packages manually:
-
-```pip install jupyterlab numpy pandas plotly pyarrow scikit-learn django```
+## Installation specifics for the backend
 
 To create a .env file at the root of the project to store Django's secret key:
 
@@ -32,6 +12,8 @@ To replace the word value with the proper secret key, please contact Vincent for
 
 ## Start the backend (Django)
 
+Remain at the root of the project "Tropical cyclones".
+
 If there are migrations necessary:
 
 ```python web_app/manage.py makemigrations```
@@ -40,7 +22,7 @@ If there are migrations necessary:
 
 Use this command to start the server:
 
-```python manage.py runserver```
+```python web_app/manage.py runserver```
 
 ## Resources
 
