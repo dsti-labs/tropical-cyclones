@@ -24,6 +24,24 @@ If the requirements install fails for any reason, install the packages manually:
 
 ```pip install jupyterlab numpy pandas plotly pyarrow scikit-learn django```
 
+To create a .env file at the root of the project to store Django's secret key:
+
+```echo "DJANGO_SECRET_KEY=value" > .env```
+
+To replace the word value with the proper secret key, please contact Vincent for approval.
+
+## Start the backend (Django)
+
+If there are migrations necessary:
+
+```python manage.py makemigrations```
+
+```python manage.py migrate```
+
+Use this command to start the server:
+
+```python manage.py runserver```
+
 ## Resources
 
 ### Dataset
