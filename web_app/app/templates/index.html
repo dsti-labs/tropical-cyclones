@@ -1,15 +1,198 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+    />
+    <!-- {% load static %} -->
     <title>Tropical Cyclones</title>
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-</head>
-<body>
+    <author></author>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+      function getCSRFToken() {
+        return document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("csrftoken="))
+          ?.split("=")[1];
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Form submission
+        document
+          .getElementById("dataForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+            let timestampInput = document.getElementById("timestamp").value;
+            let formattedTimestamp = timestampInput.replace("T", " ") + ":00"; // Convert to "YYYY-MM-DD HH:MM:SS"
+
+            let formData = {
+              cyclone_id: document.getElementById("sid").value,
+              season: formattedTimestamp,
+              basin: document.getElementById("basin").value,
+              nature: document.getElementById("nature").value,
+              latitude: parseFloat(document.getElementById("latitude").value),
+              longitude: parseFloat(document.getElementById("longitude").value),
+              wind: parseFloat(document.getElementById("wind").value),
+              dist2land: parseFloat(document.getElementById("dist2land").value),
+              storm_dir: parseFloat(document.getElementById("storm_dir").value),
+              storm_speed: parseFloat(
+                document.getElementById("storm_speed").value
+              ),
+            };
+
+            fetch("/submit-form/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(), // Include CSRF token
+              },
+              body: JSON.stringify(formData),
+            })
+              .then((response) => response.json())
+              .then((data) => console.log(data))
+              .catch((error) => console.error("Error:", error));
+          });
+
+        //Filters
+        // Filter one
+        document
+          .getElementById("most_recent_storm")
+          .addEventListener("change", function () {
+            if (this.checked) {
+              fetch("/most-recent/")
+                .then((response) => response.json())
+                .then((data) => updatePlotlyMap(data));
+            }
+          });
+
+        // Filter two
+        document
+          .getElementById("number_of_storms")
+          .addEventListener("input", function () {
+            const value = this.value;
+            fetch(`/get-last/${value}/`)
+              .then((response) => response.json())
+              .then((data) => updatePlotlyMap(data));
+          });
+
+        // Filter three
+        document
+          .getElementById("by_sid")
+          .addEventListener("input", function () {
+            const value = this.value;
+            fetch(`/get-id/${value}/`)
+              .then((response) => response.json())
+              .then((data) => updatePlotlyMap(data));
+          });
+
+        // Update map display
+        function updatePlotlyMap(data) {
+          const layout = {
+            title: "Map Visualization",
+            geo: { scope: "world" },
+          };
+          const trace = {
+            type: "scattergeo",
+            mode: "markers",
+            lon: data.lon || [],
+            lat: data.lat || [],
+            marker: { size: 8 },
+          };
+          Plotly.newPlot("plotlyMap", [trace], layout);
+        }
+      });
+    </script>
+  </head>
+  <body>
     <header>
+      <div class="header-content">
+        <h1><a href="javascript:location.reload()">Tropical Cyclones</a></h1>
+      </div>
     </header>
+
     <main>
+      <!-- Form -->
+      <section>
+        <h2>Categorize new data</h2>
+        <form id="dataForm">
+          <label for="sid">SID</label>
+          <input type="text" id="sid" name="sid" required />
+
+          <label for="wind">Wind</label>
+          <input type="number" id="wind" name="wind" required />
+
+          <label for="timestamp">Timestamp</label>
+          <input
+            type="datetime-local"
+            id="timestamp"
+            name="timestamp"
+            required
+          />
+
+          <label for="basin">Basin</label>
+          <input type="text" id="basin" name="basin" required />
+
+          <label for="nature">Nature</label>
+          <input type="text" id="nature" name="nature" required />
+
+          <label for="latitude">Latitude</label>
+          <input type="number" id="latitude" name="latitude" required />
+
+          <label for="longitude">Longitude</label>
+          <input type="number" id="longitude" name="longitude" required />
+
+          <label for="dist2land">Distance to Land</label>
+          <input type="number" id="dist2land" name="dist2land" required />
+
+          <label for="storm_speed">Storm Speed</label>
+          <input type="number" id="storm_speed" name="storm_speed" required />
+
+          <label for="storm_dir">Storm Directory</label>
+          <input type="number" id="storm_dir" name="storm_dir" required />
+
+          <button type="submit">Submit</button>
+        </form>
+      </section>
+
+      <!-- Checkbox List -->
+      <section>
+        <h2>Filter by</h2>
+        <label
+          ><input type="checkbox" id="most_recent_storm" /> Most recent
+          storm</label
+        ><br />
+        <label
+          ><input type="checkbox" /> Last
+          <input type="number" id="number_of_storms" /> storms</label
+        ><br />
+        <label
+          ><input type="checkbox" /> SID
+          <input type="text" id="by_sid" />
+        </label>
+      </section>
+
+      <!-- Content Display -->
+      <section>
+        <h2>Content Display</h2>
+        <div id="contentDisplay">Awaiting data...</div>
+      </section>
+
+      <!-- Plotly Map -->
+      <section>
+        <h2>Map</h2>
+        <div id="plotlyMap"></div>
+      </section>
     </main>
-        <footer>
-        </footer>
-    </body>
+
+    <footer>
+      <div class="social-links">
+        <a href=""><i class="fab fa-github" style="font-size: 2rem"></i></a>
+      </div>
+    </footer>
+  </body>
 </html>
