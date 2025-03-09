@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Cyclone(models.Model):
     cyclone_id = models.CharField(max_length=200)
     season = models.CharField(max_length=200)
