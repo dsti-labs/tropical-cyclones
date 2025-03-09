@@ -8,7 +8,7 @@ To create a .env file at the root of the project to store Django's secret key:
 
 ```echo "DJANGO_SECRET_KEY=value" > .env```
 
-To replace the word value with the proper secret key, please contact Vincent for approval.
+While in development stage, replace the word value with a secret key of your chosing.
 
 ## Start the backend (Django)
 
@@ -16,7 +16,7 @@ Remain at the root of the project "Tropical cyclones".
 
 If there are migrations necessary:
 
-```python web_app/manage.py makemigrations```
+```python web_app/manage.py makemigrations app```
 
 ```python web_app/manage.py migrate```
 
