@@ -7,7 +7,11 @@ from django.views.decorators.csrf import csrf_exempt
 
 from logger import logging
 from app.models import Cyclone
-from app.methods import classify, check_form_submit
+from app.methods import classify, check_form_submit, populate_database
+
+if not Cyclone.objects.exists():
+    logging.debug("The database is empty")
+    populate_database()
 
 
 def index(request):

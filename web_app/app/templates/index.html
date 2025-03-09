@@ -134,11 +134,31 @@
             required
           />
 
+          <!-- Dropdown for Basin -->
           <label for="basin">Basin</label>
-          <input type="text" id="basin" name="basin" required />
+          <select id="basin" name="basin" required>
+            <option value="">Select a Basin</option>
+            <option value="NA">NA - North Atlantic</option>
+            <option value="EP">EP - Eastern North Pacific</option>
+            <option value="WP">WP - Western North Pacific</option>
+            <option value="NI">NI - North Indian</option>
+            <option value="SI">SI - South Indian</option>
+            <option value="SP">SP - Southern Pacific</option>
+            <option value="SA">SA - South Atlantic</option>
+            <option value="MM">MM - Missing</option>
+          </select>
 
+          <!-- Dropdown for Nature -->
           <label for="nature">Nature</label>
-          <input type="text" id="nature" name="nature" required />
+          <select id="nature" name="nature" required>
+            <option value="">Select Nature</option>
+            <option value="DS">DS - Disturbance</option>
+            <option value="TS">TS - Tropical</option>
+            <option value="ET">ET - Extratropical</option>
+            <option value="SS">SS - Subtropical</option>
+            <option value="NR">NR - Not reported</option>
+            <option value="MX">MX - Mixture</option>
+          </select>
 
           <label for="latitude">Latitude</label>
           <input type="number" id="latitude" name="latitude" required />

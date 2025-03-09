@@ -2,6 +2,10 @@ import pickle
 from datetime import datetime
 from logger import logging
 
+import pandas as pd
+import numpy as np
+
+from app.models import Cyclone
 
 def classify(data):
     logging.info("starting machine learning classification")
@@ -89,3 +93,38 @@ def check_form_submit(data):
         raise ValueError("The storm direction needs to be an integer")
 
     logging.debug("form submit checked")
+
+
+def populate_database():
+    logging.debug("populating the database")
+
+    df = pd.read_parquet("../data/app_db.parquet", engine="pyarrow")
+
+    # Get the most recent row for each ID
+    latest_rows = df.sort_values('ISO_TIME', ascending=False).drop_duplicates(subset='SID')
+
+    # Select the top 10 most recent IDs
+    top_10_ids = latest_rows.nlargest(10, 'ISO_TIME')['SID']
+
+    # Filter all rows corresponding to these IDs
+    result_df = df[df['SID'].isin(top_10_ids)]
+
+    logging.debug("inserting into database")
+
+    for _, row in result_df.iterrows():    
+    
+        Cyclone.objects.create(
+            cyclone_id=row["SID"],
+            season=datetime.strftime(row["ISO_TIME"], "%Y-%m-%d %H:%M:%S"),
+            basin=row["BASIN"],
+            nature=row["NATURE"],
+            latitude=row["LAT"],
+            longitude=row["LON"],
+            wind=row["WIND"],
+            dist2land=row["DIST2LAND"],
+            storm_dir=row["STORM_SPEED"],
+            storm_speed=row["STORM_DIR"],
+            stage=row["TD9636_STAGE"]
+        )
+
+    logging.debug("Database populated")

@@ -12,4 +12,4 @@ class Cyclone(models.Model):
     dist2land = models.IntegerField()
     storm_dir = models.IntegerField()
     storm_speed = models.IntegerField()
-    stage = models.CharField(max_length=200, default=None)
+    stage = models.CharField(max_length=200, default=None, null=True)
