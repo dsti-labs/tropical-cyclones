@@ -3,32 +3,150 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="This project aims to classify stages of cyclones data"
+    />
+    <meta
+      name="authors"
+      content="Arnaud Gomez, Audrey Costes, Claire Peyran, Favour Chinonyerem Okike, Lydéric Gandibleux, Vincent Boettcher"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
       integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
       crossorigin="anonymous"
     />
-    <!-- {% load static %} -->
     <title>Tropical Cyclones</title>
-    <author></author>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      function getCSRFToken() {
-        return document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("csrftoken="))
-          ?.split("=")[1];
-      }
-
       document.addEventListener("DOMContentLoaded", function () {
-        // Form submission
+        let data_to_display = []; // Holds the dataset
+
+        function getCSRFToken() {
+          return document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("csrftoken="))
+            ?.split("=")[1];
+        }
+
+        function fetchAndRenderMostRecent() {
+          console.log(numberOfStormsInput.value);
+
+          fetch(`/most-recent/?nb_predictions=${numberOfStormsInput.value}`)
+            .then((response) => response.json())
+            .then((data) => {
+              data_to_display = data.data; // Store response in frontend variable
+              console.log(data);
+              renderPlotlyChart(); // Call function to update the graph
+            })
+            .catch((error) =>
+              console.error("Error fetching most recent cyclones:", error)
+            );
+        }
+
+        function fetchByCycloneId(cyclone_id) {
+          fetch(`/get-id/${cyclone_id}/`)
+            .then((response) => response.json())
+            .then((data) => {
+              data_to_display = data.data; // Store response in frontend variable
+              renderPlotlyChart(); // Call function to update the graph
+            })
+            .catch((error) =>
+              console.error("Error fetching cyclone data by ID:", error)
+            );
+        }
+
+        function renderPlotlyChart() {
+          if (!data_to_display.length) return; // Do nothing if no data
+
+          let df = data_to_display.map((item) => ({
+            LAT: item.latitude,
+            LON: item.longitude,
+            STAGE: item.stage,
+            WIND: item.wind,
+            PRESSURE: item.dist2land,
+          }));
+
+          let fig = {
+            data: [
+              {
+                type: "scattergeo",
+                lat: df.map((d) => d.LAT),
+                lon: df.map((d) => d.LON),
+                mode: "markers",
+                marker: {
+                  size: df.map((d) => d.WIND / 5),
+                  color: df.map((d) => d.STAGE),
+                  colorscale: "Viridis",
+                },
+                text: df.map((d) => `Pressure: ${d.PRESSURE}`),
+              },
+            ],
+            layout: {
+              title: "Cyclone Data",
+              geo: {
+                showland: true,
+                landcolor: "lightgray",
+                showcountries: true,
+                countrycolor: "black",
+              },
+            },
+          };
+
+          Plotly.newPlot("plotlyDiv", fig);
+        }
+
+        // Get all the radio buttons and inputs
+        const lastNStormsRadio = document.getElementById("last_n_storms");
+        const bySidRadio = document.getElementById("by_sid");
+        const numberOfStormsInput = document.getElementById("number_of_storms");
+        const sidInput = document.getElementById("sid_input");
+
+        // Set default value for number of storms
+        numberOfStormsInput.value = "1";
+
+        // Event listener for "Last N storms" option
+        lastNStormsRadio.addEventListener("change", function () {
+          if (this.checked) {
+            console.log("Last storms selected: ", numberOfStormsInput.value);
+            fetchAndRenderMostRecent(parseInt(numberOfStormsInput.value, 10));
+          }
+        });
+
+        // Event listener for number input
+        numberOfStormsInput.addEventListener("input", function () {
+          let n = parseInt(this.value, 10);
+          if (!isNaN(n) && n > 0 && lastNStormsRadio.checked) {
+            // console.log(n);
+            console.log(n);
+            fetchAndRenderMostRecent(n);
+          }
+        });
+
+        // Event listener for "By SID" option
+        bySidRadio.addEventListener("change", function () {
+          if (this.checked && sidInput.value.trim()) {
+            fetchByCycloneId(sidInput.value.trim());
+          }
+        });
+
+        // Event listener for SID input
+        sidInput.addEventListener("input", function () {
+          let cycloneId = this.value.trim();
+          if (cycloneId && bySidRadio.checked) {
+            fetchByCycloneId(cycloneId);
+          }
+        });
+
         document
           .getElementById("dataForm")
           .addEventListener("submit", function (event) {
             event.preventDefault();
+
             let timestampInput = document.getElementById("timestamp").value;
-            let formattedTimestamp = timestampInput.replace("T", " ") + ":00"; // Convert to "YYYY-MM-DD HH:MM:SS"
+            let formattedTimestamp = timestampInput.replace("T", " ") + ":00";
 
             let formData = {
               cyclone_id: document.getElementById("sid").value,
@@ -49,72 +167,36 @@
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                "X-CSRFToken": getCSRFToken(), // Include CSRF token
+                "X-CSRFToken": getCSRFToken(),
               },
               body: JSON.stringify(formData),
             })
               .then((response) => response.json())
-              .then((data) => console.log(data))
-              .catch((error) => console.error("Error:", error));
+              .then((data) => {
+                console.log("Form submitted successfully:", data);
+
+                if (data.status === 200) {
+                  console.log(data);
+                  console.log(data.cyclone_id);
+                  console.log(data.stage);
+                  document.getElementById(
+                    "predicted_stage"
+                  ).innerText = `Predicted Stage: ${data.stage} !`;
+                  fetchByCycloneId(data.cyclone_id); // Fetch and display updated data
+                }
+              })
+              .catch((error) => console.error("Error submitting form:", error));
           });
 
-        //Filters
-        // Filter one
-        document
-          .getElementById("most_recent_storm")
-          .addEventListener("change", function () {
-            if (this.checked) {
-              fetch("/most-recent/")
-                .then((response) => response.json())
-                .then((data) => updatePlotlyMap(data));
-            }
-          });
-
-        // Filter two
-        document
-          .getElementById("number_of_storms")
-          .addEventListener("input", function () {
-            const value = this.value;
-            fetch(`/get-last/${value}/`)
-              .then((response) => response.json())
-              .then((data) => updatePlotlyMap(data));
-          });
-
-        // Filter three
-        document
-          .getElementById("by_sid")
-          .addEventListener("input", function () {
-            const value = this.value;
-            fetch(`/get-id/${value}/`)
-              .then((response) => response.json())
-              .then((data) => updatePlotlyMap(data));
-          });
-
-        // Update map display
-        function updatePlotlyMap(data) {
-          const layout = {
-            title: "Map Visualization",
-            geo: { scope: "world" },
-          };
-          const trace = {
-            type: "scattergeo",
-            mode: "markers",
-            lon: data.lon || [],
-            lat: data.lat || [],
-            marker: { size: 8 },
-          };
-          Plotly.newPlot("plotlyMap", [trace], layout);
-        }
+        // Load the most recent cyclone on page load
+        fetchAndRenderMostRecent(1);
       });
     </script>
   </head>
   <body>
     <header>
-      <div class="header-content">
-        <h1><a href="javascript:location.reload()">Tropical Cyclones</a></h1>
-      </div>
+      <h1><a href="javascript:location.reload()">Tropical Cyclones</a></h1>
     </header>
-
     <main>
       <!-- Form -->
       <section>
@@ -179,40 +261,55 @@
         </form>
       </section>
 
-      <!-- Checkbox List -->
+      <section>
+        <div
+          id="predicted_stage"
+          style="margin-top: 20px; font-weight: bold"
+        ></div>
+      </section>
       <section>
         <h2>Filter by</h2>
-        <label
-          ><input type="checkbox" id="most_recent_storm" /> Most recent
-          storm</label
-        ><br />
-        <label
-          ><input type="checkbox" /> Last
-          <input type="number" id="number_of_storms" /> storms</label
-        ><br />
-        <label
-          ><input type="checkbox" /> SID
-          <input type="text" id="by_sid" />
-        </label>
+        <fieldset>
+          <legend>Select a filter option:</legend>
+
+          <div>
+            <input
+              type="radio"
+              id="last_n_storms"
+              name="filter"
+              value="last_n"
+              checked
+            />
+            <label for="last_n_storms"
+              >Last <input type="number" id="number_of_storms" /> storms
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="by_sid" name="filter" value="sid" />
+            <label for="by_sid"
+              >SID
+              <input type="text" id="sid_input" />
+            </label>
+          </div>
+        </fieldset>
       </section>
 
       <!-- Content Display -->
       <section>
-        <h2>Content Display</h2>
-        <div id="contentDisplay">Awaiting data...</div>
+        <div>
+          {{ plot_html|safe }}
+          <!-- This injects the Plotly chart -->
+        </div>
       </section>
 
       <!-- Plotly Map -->
       <section>
         <h2>Map</h2>
-        <div id="plotlyMap"></div>
+        <div id="plotlyDiv"></div>
       </section>
     </main>
-
     <footer>
-      <div class="social-links">
-        <a href=""><i class="fab fa-github" style="font-size: 2rem"></i></a>
-      </div>
+      <a href=""><i class="fab fa-github" style="font-size: 2rem"></i></a>
     </footer>
   </body>
 </html>
