@@ -15,7 +15,7 @@
     <!-- Loading the CSS stylesheet -->
     {% load static %}
     <title>Tropical Cyclones</title>
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}?v=1.1">
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -296,9 +296,9 @@
           <fieldset>
             <div class="filter-group">
               <input type="radio" id="last_n_storms" name="filter" value="last_n" checked />
-              <label for="last_n_storms">Last</label>
+              <label for="last_n_storms">LAST</label>
               <input type="number" id="number_of_storms" />
-              storms
+              STORMS
             </div>
             <div class="filter-group">
               <input type="radio" id="by_sid" name="filter" value="sid" />
