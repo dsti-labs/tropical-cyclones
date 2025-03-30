@@ -2,11 +2,6 @@
 
 Tropical Cyclones Severity Prediction.
 
-## Additional Resources
-
-To use the web app with the machine learning model, you need to download the weights of the model, the file was to heavy for GitHub: 
-https://app.filen.io/#/d/a9bab9bd-bed4-42b0-a18c-f0ed03b58b94%23wbG418NQ8dS0986xije4GXW3GteeQYLW
-
 ## App Overview
 
 ### Demo

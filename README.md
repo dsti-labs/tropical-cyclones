@@ -4,13 +4,10 @@ Tropical Cyclones Severity Prediction.
 
 ## Additional Resources
 
-1. To use the data visualization notebooks and the machine learning pipeline, please download the dataset and place it in the `/data` folder at the root of the project: https://app.filen.io/#/d/fee1e0e8-c504-49d9-a0b3-98440cd4402a%23Nz1UuOepVd8qKHL81uJimrGDrhVU7Wox
+To use the data visualization notebooks and the machine learning pipeline, please download the dataset and place it in the `/data` folder at the root of the project: https://app.filen.io/#/d/fee1e0e8-c504-49d9-a0b3-98440cd4402a%23Nz1UuOepVd8qKHL81uJimrGDrhVU7Wox
 
 Official source of the dataset : 
 - IBTrACS [dataset](https://www.ncei.noaa.gov/products/international-best-track-archive) from the National Centers for Environmental Information [(NOAA)](https://www.ncei.noaa.gov/)
-
-2. To use the web app with the machine learning model, you need to download the weights of the model, the file was to heavy for GitHub: 
-https://app.filen.io/#/d/a9bab9bd-bed4-42b0-a18c-f0ed03b58b94%23wbG418NQ8dS0986xije4GXW3GteeQYLW
 
 ## App Overview
 

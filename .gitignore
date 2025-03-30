@@ -1,9 +1,6 @@
 # Project dataset
 data/ibtracs.csv
 
-# app weights
-web_app/app/data/weights/base_augmented_model_histGradientBoost.pkl 
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
