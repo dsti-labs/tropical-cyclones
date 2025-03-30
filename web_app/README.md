@@ -2,11 +2,16 @@
 
 Tropical Cyclones Severity Prediction.
 
+## Additional Resources
+
+To use the web app with the machine learning model, you need to download the weights of the model, the file was to heavy for GitHub: 
+https://app.filen.io/#/d/a9bab9bd-bed4-42b0-a18c-f0ed03b58b94%23wbG418NQ8dS0986xije4GXW3GteeQYLW
+
 ## App Overview
 
 ### Demo
 
-Check out this [video](ADD LINK HERE) for a demonstration on how to start and use the web app.
+Check out this [video](../assets/video/demo.mp4) for a demonstration on how to start and use the web app.
 
 ### Visuals
 
@@ -31,20 +36,4 @@ While in development stage, replace the word value with a secret key of your cho
 
 Please start the server while being in the folder "web_app":
 
-1. Use this command to start the server: `python manage.py runserver`
-
-If you get a message telling you in the terminal that you need to migrate:
-
-2. Stop the server.
-
-3. `python manage.py makemigrations app`
-
-4. `python manage.py migrate`
-
-5. Relaunch the server: `python manage.py runserver`
-
-## Resources
-
-### Dataset
-
-- IBTrACS [dataset](https://www.ncei.noaa.gov/products/international-best-track-archive) from the National Centers for Environmental Information [(NOAA)](https://www.ncei.noaa.gov/)
+Use this command to start the server: `python manage.py runserver`
