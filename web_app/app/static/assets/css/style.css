@@ -67,15 +67,9 @@ main {
   width: 100%;
   padding: 0.4%;
   font-size: 1rem;
-<<<<<<< HEAD
-  border: 1px solid rgba( 255, 255, 255, 0.18 );
-  border-radius: 5px;
-  box-shadow: 1px 1px 1px 1px #46327e;
-=======
   border: 2px solid rgba( 255, 255, 255, 0.25 );
   border-radius: 5px;
   box-shadow: 0.2px 0.2px 1px 0.2px #46327e;
->>>>>>> ab789eb (Minor color fixes for the frontend)
   backdrop-filter: blur( 10px );
   -webkit-backdrop-filter: blur( 10px );
   box-sizing: border-box; /* includes padding into total size */
@@ -166,15 +160,9 @@ main {
   padding-left: 0.4%;
   padding-right: 0.4%;
   font-size: 1rem;
-<<<<<<< HEAD
-  border: 1px solid rgba( 255, 255, 255, 0.18 );
-  border-radius: 5px;
-  box-shadow: 1px 1px 1px 1px #46327e;
-=======
   border: 2px solid rgba( 255, 255, 255, 0.25 );
   border-radius: 5px;
   box-shadow: 0.2px 0.2px 1px 0.2px #46327e;
->>>>>>> ab789eb (Minor color fixes for the frontend)
   backdrop-filter: blur( 10px );
   -webkit-backdrop-filter: blur( 10px );
   box-sizing: border-box;
