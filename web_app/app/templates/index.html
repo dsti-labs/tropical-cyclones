@@ -101,7 +101,7 @@
                   size: df.map((d) => d.WIND / 5),
                   color: custom_colors,
                 },
-                text: df.map((d) => `Distance to land: ${d.DIST2LAND}`),
+                text: df.map((d) => `Distance to land: ${d.DIST2LAND}km`),
               },
             ],
             layout: {
@@ -244,7 +244,7 @@
               <label for="sid">SID</label>
               <input type="text" id="sid" name="sid" required />
 
-              <label for="wind">Wind</label>
+              <label for="wind">Wind Speed (knots)</label>
               <input type="number" id="wind" name="wind" required />
 
               <label for="timestamp">Timestamp</label>
@@ -279,7 +279,7 @@
                 <option value="MX">MX - Mixture</option>
               </select>
 
-              <label for="latitude">Latitude</label>
+              <label for="latitude">Latitude (degrees north)</label>
               <input
                 type="number"
                 id="latitude"
@@ -290,7 +290,7 @@
                 required
               />
 
-              <label for="longitude">Longitude</label>
+              <label for="longitude">Longitude (degrees east)</label>
               <input
                 type="number"
                 id="longitude"
@@ -301,10 +301,10 @@
                 required
               />
 
-              <label for="dist2land">Distance to Land</label>
+              <label for="dist2land">Distance to Land (km)</label>
               <input type="number" id="dist2land" name="dist2land" required />
 
-              <label for="storm_speed">Storm Speed</label>
+              <label for="storm_speed">Storm Translation Speed (knots)</label>
               <input
                 type="number"
                 id="storm_speed"
@@ -312,7 +312,7 @@
                 required
               />
 
-              <label for="storm_dir">Storm Directory</label>
+              <label for="storm_dir">Storm Direction (degrees)</label>
               <input type="number" id="storm_dir" name="storm_dir" required />
 
               <button type="submit">SUBMIT</button>
