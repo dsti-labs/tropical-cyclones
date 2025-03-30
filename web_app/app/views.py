@@ -100,20 +100,19 @@ def make_prediction(request):
             logging.debug(f"cyclone {cyclone_id} inserted")
 
             # send data to the model to make a prediction
-            # result = classify(data)
+            result = classify(data)
 
             # update stage of the cyclone entry
             logging.debug(f"updating stage of cyclone {cyclone_id}")
 
-            # cyclone = Cyclone.objects.filter(id=cyclone_id).update(
-            #     stage=result
-            # )
-            stage = ""
+            Cyclone.objects.filter(id=cyclone_id).update(
+                stage=result
+            )
 
             logging.debug(f"cyclone {cyclone_id} updated")
 
             return JsonResponse(
-                {"message": "Form submitted!", "cyclone_id": new_cyclone.cyclone_id, "stage": stage, "status": 200}
+                {"message": "Form submitted!", "cyclone_id": new_cyclone.cyclone_id, "stage": result, "status": 200}
             )
         return JsonResponse({"error": "Invalid request"}, status=400)
 

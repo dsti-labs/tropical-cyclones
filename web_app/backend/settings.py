@@ -17,7 +17,7 @@ import configparser
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 config = configparser.ConfigParser()
-env_file = BASE_DIR / "../.env"
+env_file = ".env"
 config.read(env_file)
 
 # Quick-start development settings - unsuitable for production

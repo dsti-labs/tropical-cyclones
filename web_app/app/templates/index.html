@@ -11,11 +11,16 @@
       name="authors"
       content="Arnaud Gomez, Audrey Costes, Claire Peyran, Favour Chinonyerem Okike, Lydéric Gandibleux, Vincent Boettcher"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+    />
     <!-- Loading the CSS stylesheet -->
     {% load static %}
     <title>Tropical Cyclones</title>
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}?v=1.1">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}?v=1.1" />
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -64,24 +69,26 @@
             LON: item.longitude,
             STAGE: Math.floor(parseFloat(item.stage)),
             WIND: item.wind,
-            PRESSURE: item.dist2land,
+            DIST2LAND: item.dist2land,
           }));
 
           // Color mapping based on cyclone stage
           const stageColorMap = {
-            0: '#440154',
-            1: '#46327e',
-            2: '#365c8d',
-            3: '#277f8e',
-            4: '#1fa187',
-            5: '#4ac16d',
-            6: '#a0da39',
-            7: '#fde725',
+            0: "#440154",
+            1: "#46327e",
+            2: "#365c8d",
+            3: "#277f8e",
+            4: "#1fa187",
+            5: "#4ac16d",
+            6: "#a0da39",
+            7: "#fde725",
           };
 
           // Generates a color table based on the stage
           // Plus it sets a generic color for cyclones with no stages or an incorrect one
-          let custom_colors = df.map((d) => stageColorMap[d.STAGE] || '#cccccc');
+          let custom_colors = df.map(
+            (d) => stageColorMap[d.STAGE] || "#cccccc"
+          );
 
           let fig = {
             data: [
@@ -94,13 +101,13 @@
                   size: df.map((d) => d.WIND / 5),
                   color: custom_colors,
                 },
-                text: df.map((d) => `Pressure: ${d.PRESSURE}`),
+                text: df.map((d) => `Distance to land: ${d.DIST2LAND}`),
               },
             ],
             layout: {
               geo: {
                 showland: true,
-                landcolor: '#ebedee',
+                landcolor: "#ebedee",
                 showcountries: true,
                 countrycolor: "#797979",
               },
@@ -157,15 +164,19 @@
           .addEventListener("submit", function (event) {
             event.preventDefault();
 
-            const latitude = parseFloat(document.getElementById("latitude").value);
-            const longitude = parseFloat(document.getElementById("longitude").value);
-        
+            const latitude = parseFloat(
+              document.getElementById("latitude").value
+            );
+            const longitude = parseFloat(
+              document.getElementById("longitude").value
+            );
+
             // Limits for latitude and longitude to avoid putting dots outside of the map
             if (latitude < -90 || latitude > 90) {
               alert("Latitude must be between -90 and 90.");
               return;
             }
-        
+
             if (longitude < -180 || longitude > 180) {
               alert("Longitude must be between -180 and 180.");
               return;
@@ -207,7 +218,7 @@
                   console.log(data.stage);
                   document.getElementById(
                     "predicted_stage"
-                  ).innerText = `Predicted Stage: ${data.stage} !`;
+                  ).innerText = `Predicted Stage: ${data.stage}`;
                   fetchByCycloneId(data.cyclone_id); // Fetch and display updated data
                 }
               })
@@ -229,63 +240,84 @@
         <section>
           <h2>INSERT NEW DATA</h2>
           <fieldset>
-          <form id="dataForm">
-            <label for="sid">SID</label>
-            <input type="text" id="sid" name="sid" required />
+            <form id="dataForm">
+              <label for="sid">SID</label>
+              <input type="text" id="sid" name="sid" required />
 
-            <label for="wind">Wind</label>
-            <input type="number" id="wind" name="wind" required />
+              <label for="wind">Wind</label>
+              <input type="number" id="wind" name="wind" required />
 
-            <label for="timestamp">Timestamp</label>
-            <input
-              type="datetime-local"
-              id="timestamp"
-              name="timestamp"
-              required
-            />
+              <label for="timestamp">Timestamp</label>
+              <input
+                type="datetime-local"
+                id="timestamp"
+                name="timestamp"
+                required
+              />
 
-            <label for="basin">Basin</label>
-            <select id="basin" name="basin" required>
-              <option value="">Select a basin</option>
-              <option value="NA">NA - North Atlantic</option>
-              <option value="EP">EP - Eastern North Pacific</option>
-              <option value="WP">WP - Western North Pacific</option>
-              <option value="NI">NI - North Indian</option>
-              <option value="SI">SI - South Indian</option>
-              <option value="SP">SP - Southern Pacific</option>
-              <option value="SA">SA - South Atlantic</option>
-              <option value="MM">MM - Missing</option>
-            </select>
+              <label for="basin">Basin</label>
+              <select id="basin" name="basin" required>
+                <option value="">Select a basin</option>
+                <option value="NA">NA - North Atlantic</option>
+                <option value="EP">EP - Eastern North Pacific</option>
+                <option value="WP">WP - Western North Pacific</option>
+                <option value="NI">NI - North Indian</option>
+                <option value="SI">SI - South Indian</option>
+                <option value="SP">SP - Southern Pacific</option>
+                <option value="SA">SA - South Atlantic</option>
+                <option value="MM">MM - Missing</option>
+              </select>
 
-            <label for="nature">Nature</label>
-            <select id="nature" name="nature" required>
-              <option value="">Select nature type</option>
-              <option value="DS">DS - Disturbance</option>
-              <option value="TS">TS - Tropical</option>
-              <option value="ET">ET - Extratropical</option>
-              <option value="SS">SS - Subtropical</option>
-              <option value="NR">NR - Not reported</option>
-              <option value="MX">MX - Mixture</option>
-            </select>
+              <label for="nature">Nature</label>
+              <select id="nature" name="nature" required>
+                <option value="">Select nature type</option>
+                <option value="DS">DS - Disturbance</option>
+                <option value="TS">TS - Tropical</option>
+                <option value="ET">ET - Extratropical</option>
+                <option value="SS">SS - Subtropical</option>
+                <option value="NR">NR - Not reported</option>
+                <option value="MX">MX - Mixture</option>
+              </select>
 
-            <label for="latitude">Latitude</label>
-            <input type="number" id="latitude" name="latitude" min="-90" max="90" step="1" required />
-            
-            <label for="longitude">Longitude</label>
-            <input type="number" id="longitude" name="longitude" min="-180" max="180" step="1" required />
+              <label for="latitude">Latitude</label>
+              <input
+                type="number"
+                id="latitude"
+                name="latitude"
+                min="-90"
+                max="90"
+                step="1"
+                required
+              />
 
-            <label for="dist2land">Distance to Land</label>
-            <input type="number" id="dist2land" name="dist2land" required />
+              <label for="longitude">Longitude</label>
+              <input
+                type="number"
+                id="longitude"
+                name="longitude"
+                min="-180"
+                max="180"
+                step="1"
+                required
+              />
 
-            <label for="storm_speed">Storm Speed</label>
-            <input type="number" id="storm_speed" name="storm_speed" required />
+              <label for="dist2land">Distance to Land</label>
+              <input type="number" id="dist2land" name="dist2land" required />
 
-            <label for="storm_dir">Storm Directory</label>
-            <input type="number" id="storm_dir" name="storm_dir" required />
+              <label for="storm_speed">Storm Speed</label>
+              <input
+                type="number"
+                id="storm_speed"
+                name="storm_speed"
+                required
+              />
 
-            <button type="submit">SUBMIT</button>
-          </form>
-        </fieldset>
+              <label for="storm_dir">Storm Directory</label>
+              <input type="number" id="storm_dir" name="storm_dir" required />
+
+              <button type="submit">SUBMIT</button>
+            </form>
+          </fieldset>
         </section>
       </div>
 
@@ -295,7 +327,13 @@
           <h2>FILTER BY</h2>
           <fieldset>
             <div class="filter-group">
-              <input type="radio" id="last_n_storms" name="filter" value="last_n" checked />
+              <input
+                type="radio"
+                id="last_n_storms"
+                name="filter"
+                value="last_n"
+                checked
+              />
               <label for="last_n_storms">LAST</label>
               <input type="number" id="number_of_storms" />
               STORMS
@@ -307,24 +345,26 @@
             </div>
           </fieldset>
         </section>
-      <!-- Content Display -->
+        <!-- Content Display -->
         <section>
           <h2>LATEST CYCLONE ACTIVITY</h2>
           <fieldset>
-          {{ plot_html|safe }}
-          <div id="plotlyDiv"></div>
-          <div id="predicted_stage">
-            No predictions available yet.
-          </div>
-        </fieldset>
+            {{ plot_html|safe }}
+            <div id="plotlyDiv"></div>
+            <div id="predicted_stage">No predictions available yet.</div>
+          </fieldset>
         </section>
       </div>
     </main>
     <footer>
       <div class="social-links">
-        <a href="https://github.com/dsti-labs/tropical-cyclones"><i class="fab fa-github" style="font-size: 2.5rem;"></i></a>
-        <a href="https://mit-license.org/"><i class="fas fa-file-contract" style="font-size: 2.5rem;"></i></a>
-        </div>
+        <a href="https://github.com/dsti-labs/tropical-cyclones"
+          ><i class="fab fa-github" style="font-size: 2.5rem"></i
+        ></a>
+        <a href="https://mit-license.org/"
+          ><i class="fas fa-file-contract" style="font-size: 2.5rem"></i
+        ></a>
+      </div>
     </footer>
   </body>
 </html>

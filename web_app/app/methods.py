@@ -1,27 +1,70 @@
-import pickle
+import joblib
 from datetime import datetime
 from logger import logging
-
+from preprocessing_steps import StormDirTransformer
 import pandas as pd
-import numpy as np
 
 from app.models import Cyclone
 
+
+def get_season(date, latitude):
+    month = date.month
+
+    if latitude >= 0:  # Northern Hemisphere
+        match month:
+            case 12 | 1 | 2: 
+                return "winter"
+            case 3 | 4 | 5: 
+                return "spring"
+            case 6 | 7 | 8:
+                return "summer"
+            case 9 | 10 | 11: 
+                return "fall"
+    
+    else:  # Southern Hemisphere
+        match month:
+            case 12 | 1 | 2:
+                return "summer"
+            case 3 | 4 | 5: 
+                return  "fall"
+            case 6 | 7 | 8: 
+                return "winter"
+            case 9 | 10 | 11: 
+                return "spring"
+            
 def classify(data):
     logging.info("starting machine learning classification")
+
 
     # load ML model
     # the weights contains the pre-processing step
     logging.info("loading machine learning model's weights")
-    with open("base_best_model_rfr.pkl", "rb") as f:
-        loaded_model = pickle.load(f)
+    with open("app/data/weights/base_augmented_model_histGradientBoost.pkl", "rb") as f:
+        loaded_model = joblib.load(f)
 
-    # categorizing
-    logging.info("categorizing new data")
+    
+    # managing the date -> season
+    data["season"] = get_season(datetime.strptime(data["season"], "%Y-%m-%d %H:%M:%S"), data["latitude"])
 
-    answer = ""
+     # Make predictions
+    logging.info("Categorizing new data")
+    row = pd.json_normalize(data)
 
-    return answer
+    # dropping id
+    row.drop(columns=["cyclone_id"], inplace=True)
+
+    # managing the columns' names discrepencies
+    row.columns = row.columns.str.upper()
+    row = row.rename(columns={"LATITUDE": 'LAT', "LONGITUDE": "LON"})
+
+
+    predictions = loaded_model.predict(row)
+
+    # returns a <class 'numpy.ndarray'> with a single class element 
+    # so we just extract the first value
+    predicted_class = predictions[0]
+
+    return predicted_class
 
 
 def check_form_submit(data):
@@ -98,7 +141,7 @@ def check_form_submit(data):
 def populate_database():
     logging.debug("populating the database")
 
-    df = pd.read_parquet("../data/app_db.parquet", engine="pyarrow")
+    df = pd.read_parquet("app/data/dataframe/dataframe.parquet", engine="pyarrow")
 
     # Get the most recent row for each ID
     latest_rows = df.sort_values('ISO_TIME', ascending=False).drop_duplicates(subset='SID')
