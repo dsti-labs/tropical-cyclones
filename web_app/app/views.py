@@ -10,16 +10,17 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Max
+from django.db import connection
 
 from logger import logging
 from app.models import Cyclone
 from app.methods import classify, check_form_submit, populate_database
 
 
-
-if not Cyclone.objects.exists():
-    logging.debug("The database is empty")
-    populate_database()
+if "app_cyclone" in connection.introspection.table_names():
+    if not Cyclone.objects.exists():
+        logging.debug("The database is empty")
+        populate_database()
 
 
 def index(request):
@@ -29,7 +30,7 @@ def index(request):
 
 def get_cyclone_chart(request):
 
-# Fetch most recent cyclone data
+    # Fetch most recent cyclone data
     url = "http://127.0.0.1:8000/most-recent?nb_predictions=1"
     response = requests.get(url)
 
@@ -38,7 +39,9 @@ def get_cyclone_chart(request):
         df_ = pd.DataFrame(data)
 
         # Check if required columns exist
-        if {"LAT", "LON", "TD9636_STAGE", "WIND", "PRESSURE"}.issubset(df_.columns):
+        if {"LAT", "LON", "TD9636_STAGE", "WIND", "PRESSURE"}.issubset(
+            df_.columns
+        ):
             fig = px.scatter_geo(
                 df_,
                 lat="LAT",
@@ -46,7 +49,7 @@ def get_cyclone_chart(request):
                 color="TD9636_STAGE",
                 size="WIND",
                 hover_name="PRESSURE",
-                projection="natural earth"
+                projection="natural earth",
             )
 
             fig.update_layout(
@@ -55,8 +58,8 @@ def get_cyclone_chart(request):
                     showland=True,
                     landcolor="lightgray",
                     showcountries=True,
-                    countrycolor="black"
-                )
+                    countrycolor="black",
+                ),
             )
 
             # Convert Plotly figure to HTML
@@ -105,14 +108,17 @@ def make_prediction(request):
             # update stage of the cyclone entry
             logging.debug(f"updating stage of cyclone {cyclone_id}")
 
-            Cyclone.objects.filter(id=cyclone_id).update(
-                stage=result
-            )
+            Cyclone.objects.filter(id=cyclone_id).update(stage=result)
 
             logging.debug(f"cyclone {cyclone_id} updated")
 
             return JsonResponse(
-                {"message": "Form submitted!", "cyclone_id": new_cyclone.cyclone_id, "stage": result, "status": 200}
+                {
+                    "message": "Form submitted!",
+                    "cyclone_id": new_cyclone.cyclone_id,
+                    "stage": result,
+                    "status": 200,
+                }
             )
         return JsonResponse({"error": "Invalid request"}, status=400)
 
@@ -122,11 +128,11 @@ def make_prediction(request):
 
 def display_most_recent_predictions(request):
     try:
-        nb_predictions = int(request.GET.get('nb_predictions', 1))
+        nb_predictions = int(request.GET.get("nb_predictions", 1))
         # Get the n most recent unique cyclone IDs
         if nb_predictions > 1:
             logging.debug(
-                f"fetching the last {str(nb_predictions)} cyclones in the database"
+                f"fetching the last {str(nb_predictions)} cyclones in the DB"
             )
         else:
             logging.debug("fetching the last cyclone in the database")
@@ -140,12 +146,18 @@ def display_most_recent_predictions(request):
         # Fetch the most recent season for each unique cyclone_id
         recent_cyclone_ids = (
             Cyclone.objects.values("cyclone_id")
-            .annotate(latest_season=Max("season"))  # Get the latest season per cyclone
-            .order_by("-latest_season")[:nb_predictions]  # Order by latest season
+            .annotate(
+                latest_season=Max("season")
+            )  # Get the latest season per cyclone
+            .order_by("-latest_season")[
+                :nb_predictions
+            ]  # Order by latest season
         )
 
         # Extract only the cyclone_id values
-        recent_cyclone_ids = [entry["cyclone_id"] for entry in recent_cyclone_ids]
+        recent_cyclone_ids = [
+            entry["cyclone_id"] for entry in recent_cyclone_ids
+        ]
 
         logging.debug(f"Recent cyclone IDs: {recent_cyclone_ids}")
 
@@ -165,7 +177,6 @@ def display_most_recent_predictions(request):
 
     except ValueError as error:
         return JsonResponse({"error": error}, status=404)
-
 
 
 def get_cyclone_by_id(request, value: str):
