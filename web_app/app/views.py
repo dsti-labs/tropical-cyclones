@@ -19,7 +19,7 @@ from app.methods import classify, check_form_submit, populate_database
 
 if "app_cyclone" in connection.introspection.table_names():
     if not Cyclone.objects.exists():
-        logging.debug("The database is empty")
+        logging.info("The database is empty")
         populate_database()
 
 
