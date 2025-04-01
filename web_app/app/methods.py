@@ -13,24 +13,24 @@ def get_season(date, latitude):
     if latitude >= 0:  # Northern Hemisphere
         match month:
             case 12 | 1 | 2: 
-                return "winter"
+                return "Winter"
             case 3 | 4 | 5: 
-                return "spring"
+                return "Spring"
             case 6 | 7 | 8:
-                return "summer"
+                return "Summer"
             case 9 | 10 | 11: 
-                return "fall"
+                return "Fall"
     
     else:  # Southern Hemisphere
         match month:
             case 12 | 1 | 2:
-                return "summer"
+                return "Summer"
             case 3 | 4 | 5: 
-                return  "fall"
+                return  "Fall"
             case 6 | 7 | 8: 
-                return "winter"
+                return "Winter"
             case 9 | 10 | 11: 
-                return "spring"
+                return "Spring"
             
 def classify(data):
     logging.info("starting machine learning classification")
